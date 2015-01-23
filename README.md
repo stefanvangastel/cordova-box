@@ -1,30 +1,37 @@
-#!/usr/bin/env bash
+Cordova Box
+=============================
 
-ANDROID_SDK_FILENAME=android-sdk_r23.0.2-linux.tgz
-ANDROID_SDK=http://dl.google.com/android/$ANDROID_SDK_FILENAME
+Cordova Box is a ready-to-go hybrid deveopment environment for building mobile apps with Cordova and Android. Cordova Box was built to make it easier for developers to build Android versions of their app, and especially for Windows users to get a complete dev environment set up without all the headaches.
 
-#sudo apt-get install python-software-properties
-#sudo add-apt-repository ppa:webupd8team/java
-apt-get update
-apt-get install -y nodejs nodejs-legacy npm git openjdk-7-jdk ant expect
+This project is based on [Ionic Box](https://github.com/driftyco/ionic-box)
 
-curl -O $ANDROID_SDK
-tar -xzvf $ANDROID_SDK_FILENAME
-sudo chown -R vagrant android-sdk-linux/
+### Installation
 
-echo "ANDROID_HOME=~/android-sdk-linux" >> /home/vagrant/.bashrc
-echo "PATH=\$PATH:~/android-sdk-linux/tools:~/android-sdk-linux/platform-tools" >> /home/vagrant/.bashrc
+To install, download and install [Vagrant](https://www.vagrantup.com/downloads.html) for your platform, then download and install [VirtualBox](http://virtualbox.org/).
 
-npm install -g cordova
-expect -c '
-set timeout -1   ;
-spawn /home/vagrant/android-sdk-linux/tools/android update sdk -u --all --filter platform-tool,android-19,build-tools-19.1.0
-expect { 
-    "Do you accept the license" { exp_send "y\r" ; exp_continue }
-    eof
-}
-'
+Once Vagrant and VirtualBox are installed, you can download the latest release of this GitHub repo, and unzip it. `cd` into the unzipped folder and run:
 
+```bash
+$ vagrant up
+$ vagrant ssh
+```
+
+The username for vagrant is `vagrant` and the password is `vagrant`. 
+
+This will download and install the image, and then go through the dependencies and install them one by one. `vagrant ssh` will connect you to the image and give you a bash prompt. Once everything completes, you'll have a working box to build your apps on Android.
+
+### Connected Android Devices
+
+The image also has support for connected USB Android devices. To test whether devices are connected, you can run (from the box):
+
+```bash
+$ sudo /home/vagrant/android-sdk-linux/platform-tools/adb devices
+```
+
+If that does not work, or shows `????? permissions`, then run:
+
+```bash
 sudo /home/vagrant/android-sdk-linux/platform-tools/adb kill-server
 sudo /home/vagrant/android-sdk-linux/platform-tools/adb start-server
-sudo /home/vagrant/android-sdk-linux/platform-tools/adb devices
+```
+
